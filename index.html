@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synthesis</title>
+    <style>
+        .error {
+            display: block;
+            visibility: hidden;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
+    <div class="error">
+        No speech synthesis found on this device.
+    </div>
     <form>
         Text: <input type="text" /><br />
         Voice: <select></select><br />
@@ -14,13 +24,17 @@
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
         var synth = window.speechSynthesis;
-        
-            if (!synth) console.log("No speech synthesis found!");
-            
         var inputForm = document.querySelector('form');
         var inputTxt = document.querySelector('input');
         var voiceSelect = document.querySelector('select');
-        
+        var error = document.querySelector('.error');
+            
+        if (!synth) {
+            inputForm.style.visibility = "hidden";
+            error.style.visibility = "visible";
+            console.log("No speech synthesis found!");
+        }
+            
         var voices = synth.getVoices();
         
         for(i = 0; i < voices.length ; i++) {
