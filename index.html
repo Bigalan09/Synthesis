@@ -12,8 +12,11 @@
         <button>Speak</button>
     </form>
     <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
         var synth = window.speechSynthesis;
         
+            if (!synth) console.log("No speech synthesis found!");
+            
         var inputForm = document.querySelector('form');
         var inputTxt = document.querySelector('input');
         var voiceSelect = document.querySelector('select');
@@ -41,6 +44,7 @@
           synth.speak(utterThis);
           inputTxt.blur();
         }
+        });
         </script>
 </body>
 </html>
