@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthesis</title>
+</head>
+<body>
+    <form>
+        Text: <input type="text" /><br />
+        Voice: <select></select><br />
+        <button>Speak</button>
+    </form>
+    <script type="text/javascript">
+        var synth = window.speechSynthesis;
+        
+        var inputForm = document.querySelector('form');
+        var inputTxt = document.querySelector('input');
+        var voiceSelect = document.querySelector('select');
+        
+        var voices = synth.getVoices();
+        
+        for(i = 0; i < voices.length ; i++) {
+          var option = document.createElement('option');
+          option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+          option.setAttribute('data-lang', voices[i].lang);
+          option.setAttribute('data-name', voices[i].name);
+          voiceSelect.appendChild(option);
+        }
+        
+        inputForm.onsubmit = function(event) {
+          event.preventDefault();
+        
+          var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
+          var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+          for(i = 0; i < voices.length ; i++) {
+            if(voices[i].name === selectedOption) {
+              utterThis.voice = voices[i];
+            }
+          }
+          synth.speak(utterThis);
+          inputTxt.blur();
+        }
+        </script>
+</body>
+</html>
