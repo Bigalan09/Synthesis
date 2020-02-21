@@ -10,38 +10,52 @@
 </head>
 
 <body>
-    <div class="container" style="margin-top:24px;">
-        <article class="message is-danger">
+    <div class="container is-fluid" style="margin-top:24px;">
+        <article class="error message is-danger is-hidden">
             <div class="message-body">
                 No speech synthesis found on this device.
             </div>
         </article>
         <form>
-            Text: <input type="text" class="input" /><br />
-            Voice: <div class="select"><select></select></div><br />
-            <button class="button is-primary">Speak</button>
+            <div class="field">
+                <label class="label">Text</label>
+                <div class="control">
+                    <input type="text" class="input" />
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Voice</label>
+                <div class="control">
+                    <div class="select"><select></select></div>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Speak</button>
+                </div>
+                <div class="control">
+                    <button type="button" id="refresh" class="button is-info">Refresh</button>
+                </div>
+            </div>
         </form>
-        <br />
-        <button class="button is-info">Refresh</button>
+        
     </div>
     <script type="text/javascript">
         function load() {
-            var synth = window.speechSynthesis;
-            var inputForm = document.querySelector('form');
-            var inputTxt = document.querySelector('input');
-            var voiceSelect = document.querySelector('select');
-            var error = document.querySelector('.error');
+            const synth = window.speechSynthesis;
+            const inputForm = document.querySelector('form');
+            const inputTxt = document.querySelector('input');
+            const voiceSelect = document.querySelector('select');
+            const error = document.querySelector('.error');
 
             if (!synth) {
-                inputForm.style.visibility = "hidden";
-                error.style.visibility = "visible";
-                console.log("No speech synthesis found!");
+                document.querySelector('.error').classList.add('is-block');
             }
 
-            var voices = synth.getVoices();
+            const voices = synth.getVoices();
 
             for (i = 0; i < voices.length; i++) {
-                var option = document.createElement('option');
+                const option = document.createElement('option');
                 option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
                 option.setAttribute('data-lang', voices[i].lang);
                 option.setAttribute('data-name', voices[i].name);
@@ -51,8 +65,8 @@
             inputForm.onsubmit = function (event) {
                 event.preventDefault();
 
-                var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
-                var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                const utterThis = new SpeechSynthesisUtterance(inputTxt.value);
+                const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
                 for (i = 0; i < voices.length; i++) {
                     if (voices[i].name === selectedOption) {
                         utterThis.voice = voices[i];
@@ -60,6 +74,7 @@
                 }
                 synth.speak(utterThis);
                 inputTxt.blur();
+                inputTxt.value = "";
             }
         }
         document.addEventListener("DOMContentLoaded", function () {
