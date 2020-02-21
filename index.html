@@ -1,64 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synthesis</title>
-    <style>
-        .error {
-            display: block;
-            visibility: hidden;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css"
+        integrity="sha256-D9M5yrVDqFlla7nlELDaYZIpXfFWDytQtiV+TaH6F1I=" crossorigin="anonymous" />
 </head>
+
 <body>
-    <div class="error">
-        No speech synthesis found on this device.
+    <div class="container" style="margin-top:24px;">
+        <article class="message is-danger">
+            <div class="message-body">
+                No speech synthesis found on this device.
+            </div>
+        </article>
+        <form>
+            Text: <input type="text" class="input" /><br />
+            Voice: <div class="select"><select></select></div><br />
+            <button class="button is-primary">Speak</button>
+        </form>
+        <br />
+        <button class="button is-info">Refresh</button>
     </div>
-    <form>
-        Text: <input type="text" /><br />
-        Voice: <select></select><br />
-        <button>Speak</button>
-    </form>
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function() {
-        var synth = window.speechSynthesis;
-        var inputForm = document.querySelector('form');
-        var inputTxt = document.querySelector('input');
-        var voiceSelect = document.querySelector('select');
-        var error = document.querySelector('.error');
-            
-        if (!synth) {
-            inputForm.style.visibility = "hidden";
-            error.style.visibility = "visible";
-            console.log("No speech synthesis found!");
-        }
-            
-        var voices = synth.getVoices();
-        
-        for(i = 0; i < voices.length ; i++) {
-          var option = document.createElement('option');
-          option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
-          option.setAttribute('data-lang', voices[i].lang);
-          option.setAttribute('data-name', voices[i].name);
-          voiceSelect.appendChild(option);
-        }
-        
-        inputForm.onsubmit = function(event) {
-          event.preventDefault();
-        
-          var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
-          var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
-          for(i = 0; i < voices.length ; i++) {
-            if(voices[i].name === selectedOption) {
-              utterThis.voice = voices[i];
+        function load() {
+            var synth = window.speechSynthesis;
+            var inputForm = document.querySelector('form');
+            var inputTxt = document.querySelector('input');
+            var voiceSelect = document.querySelector('select');
+            var error = document.querySelector('.error');
+
+            if (!synth) {
+                inputForm.style.visibility = "hidden";
+                error.style.visibility = "visible";
+                console.log("No speech synthesis found!");
             }
-          }
-          synth.speak(utterThis);
-          inputTxt.blur();
+
+            var voices = synth.getVoices();
+
+            for (i = 0; i < voices.length; i++) {
+                var option = document.createElement('option');
+                option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+                option.setAttribute('data-lang', voices[i].lang);
+                option.setAttribute('data-name', voices[i].name);
+                voiceSelect.appendChild(option);
+            }
+
+            inputForm.onsubmit = function (event) {
+                event.preventDefault();
+
+                var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
+                var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                for (i = 0; i < voices.length; i++) {
+                    if (voices[i].name === selectedOption) {
+                        utterThis.voice = voices[i];
+                    }
+                }
+                synth.speak(utterThis);
+                inputTxt.blur();
+            }
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            load();
+            document.querySelector('#refresh').addEventListener('click', load);
         });
-        </script>
+    </script>
 </body>
+
 </html>
