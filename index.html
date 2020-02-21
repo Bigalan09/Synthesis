@@ -38,21 +38,12 @@
                 </div>
             </div>
         </form>
-        
+
     </div>
     <script type="text/javascript">
-        function load() {
-            const synth = window.speechSynthesis;
-            const inputForm = document.querySelector('form');
-            const inputTxt = document.querySelector('input');
-            const voiceSelect = document.querySelector('select');
-            const error = document.querySelector('.error');
-
-            if (!synth) {
-                document.querySelector('.error').classList.add('is-block');
-            }
-
+        function loadVoices(synth) {
             const voices = synth.getVoices();
+            const voiceSelect = document.querySelector('select');
 
             for (i = 0; i < voices.length; i++) {
                 const option = document.createElement('option');
@@ -61,6 +52,23 @@
                 option.setAttribute('data-name', voices[i].name);
                 voiceSelect.appendChild(option);
             }
+        }
+
+        function load() {
+            const synth = window.speechSynthesis;
+            const inputForm = document.querySelector('form');
+            const inputTxt = document.querySelector('input');
+            const error = document.querySelector('.error');
+
+            if (!synth) {
+                document.querySelector('.error').classList.add('is-block');
+            }
+
+            synth.onvoiceschanged = function () {
+                loadVoices(synth);
+            };
+
+            loadVoices(synth);
 
             inputForm.onsubmit = function (event) {
                 event.preventDefault();
