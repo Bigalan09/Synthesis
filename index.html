@@ -41,9 +41,11 @@
 
     </div>
     <script type="text/javascript">
+        let voices = null;
+        const voiceSelect = document.querySelector('select');
+
         function loadVoices(synth) {
-            const voices = synth.getVoices();
-            const voiceSelect = document.querySelector('select');
+            voices = synth.getVoices();
 
             for (i = 0; i < voices.length; i++) {
                 const option = document.createElement('option');
@@ -58,7 +60,6 @@
             const synth = window.speechSynthesis;
             const inputForm = document.querySelector('form');
             const inputTxt = document.querySelector('input');
-            const voiceSelect = document.querySelector('select');
             const error = document.querySelector('.error');
 
             if (!synth) {
